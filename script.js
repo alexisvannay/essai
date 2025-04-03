@@ -1,6 +1,5 @@
-// script.js - version Firebase
+// script.js - version Firebase avec adresse complète
 
-// === CONFIG FIREBASE ===
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
 import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
 
@@ -16,9 +15,12 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// === ÉLÉMENTS DU DOM ===
+// === ÉLÉMENTS DU FORMULAIRE ===
 const emailInput = document.getElementById("email");
 const phoneInput = document.getElementById("phone");
+const adresseInput = document.getElementById("adresse");
+const codePostalInput = document.getElementById("codePostal");
+const lieuInput = document.getElementById("lieu");
 const saveBtn = document.getElementById("save");
 const message = document.getElementById("message");
 
@@ -27,11 +29,17 @@ if (saveBtn) {
   saveBtn.addEventListener("click", async () => {
     const email = emailInput.value;
     const phone = phoneInput.value;
+    const adresse = adresseInput.value;
+    const codePostal = codePostalInput.value;
+    const lieu = lieuInput.value;
 
     try {
       await setDoc(doc(db, "infos", "wFxq2hxKeZP8iDLvWHQ6"), {
-        email: email,
-        phone: phone
+        email,
+        phone,
+        adresse,
+        codePostal,
+        lieu
       });
 
       message.textContent = "Infos mises à jour ✅";
@@ -42,22 +50,23 @@ if (saveBtn) {
   });
 }
 
-// === LECTURE POUR PAGE CONTACT ===
+// === AFFICHAGE AUTOMATIQUE SUR LA PAGE CONTACT ===
 async function chargerInfosContact() {
-  const emailElement = document.getElementById("contact-email");
-  const phoneElement = document.getElementById("contact-phone");
-
-  if (!emailElement || !phoneElement) return;
+  const emailEl = document.getElementById("contact-email");
+  const phoneEl = document.getElementById("contact-phone");
+  const adresseEl = document.getElementById("contact-adresse");
 
   try {
     const docSnap = await getDoc(doc(db, "infos", "wFxq2hxKeZP8iDLvWHQ6"));
     if (docSnap.exists()) {
       const data = docSnap.data();
-      emailElement.textContent = data.email;
-      phoneElement.textContent = data.phone;
+
+      if (emailEl) emailEl.textContent = data.email;
+      if (phoneEl) phoneEl.textContent = data.phone;
+      if (adresseEl) adresseEl.textContent = `${data.adresse}, ${data.codePostal} ${data.lieu}`;
     }
   } catch (err) {
-    console.error("Erreur de chargement des infos :", err);
+    console.error("Erreur de chargement Firebase :", err);
   }
 }
 
