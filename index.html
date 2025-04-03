@@ -2,20 +2,36 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Admin</title>
+  <title>Admin | AV Web Création</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <h1>Page Administrateur</h1>
-    <label for="email">Email :</label>
-    <input type="email" id="email" placeholder="Entrez votre email">
-    <label for="phone">Téléphone :</label>
-    <input type="tel" id="phone" placeholder="Entrez votre téléphone">
-    <button id="save">Mettre à jour</button>
-    <p id="message"></p>
-  </div>
-  <script type="module" src="script.js"></script>
+  <div class="admin-container">
+    <h1 class="title">Espace Administrateur</h1>
+    <p class="subtitle">Modifiez les informations de contact</p>
 
+    <div class="form-card">
+      <label for="email">📧 Adresse Email</label>
+      <input type="email" id="email" placeholder="exemple@mail.com" required>
+
+      <label for="phone">📞 Téléphone</label>
+      <input type="tel" id="phone" placeholder="+41 00 000 00 00" required>
+      <label for="adresse">📍 Adresse postale</label>
+      <input type="text" id="adresse" placeholder="Rue du Tattoo 12" required>
+
+      <label for="codePostal">🔢 Code postal</label>
+      <input type="text" id="codePostal" placeholder="1890" required>
+
+      <label for="lieu">🏙️ Lieu</label>
+      <input type="text" id="lieu" placeholder="Saint-Maurice" required>
+
+
+      <button id="save">💾 Mettre à jour</button>
+      <p id="message" class="message"></p>
+    </div>
+  </div>
+
+  <script type="module" src="script.js"></script>
 </body>
 </html>
