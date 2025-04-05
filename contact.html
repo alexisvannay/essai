@@ -2,6 +2,8 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
+  <meta name="client-uid" content="MqxOJD5UmLVAmAymDzLJbp7I3w53">
+
   <title>Contact</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -16,40 +18,7 @@
     </div>
   </div>
 
-  <!-- Script Firebase -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+  <script type="module" src="script.js"></script>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBRIdIXj0IixLwASOgZsqka550gOAVr7_4",
-      authDomain: "avwebcreation-admin.firebaseapp.com",
-      projectId: "avwebcreation-admin",
-      storageBucket: "avwebcreation-admin.firebasestorage.app",
-      messagingSenderId: "293089525298",
-      appId: "1:293089525298:web:68ff4408a175909699862b"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    const uid = "MqxOJD5UmLVAmAymDzLJbp7I3w53"; // 🔁 Remplace par ton UID exact
-
-    async function chargerInfosClient() {
-      const docRef = doc(db, "users", uid);
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        document.getElementById("contact-email").textContent = data.email ?? "Non défini";
-        document.getElementById("contact-phone").textContent = data.telephone ?? "Non défini";
-        document.getElementById("contact-adresse").textContent = data.adresse ?? "Non définie";
-      } else {
-        console.log("Aucune donnée trouvée pour cet utilisateur.");
-      }
-    }
-
-    chargerInfosClient();
-  </script>
 </body>
 </html>
