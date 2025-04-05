@@ -36,9 +36,7 @@ if (!metaUid) {
         if (phoneEl) phoneEl.textContent = data.phone ?? "Non défini";
         if (adresseEl)
           adresseEl.textContent = `${data.adresse ?? ""}, ${data.codePostal ?? ""} ${data.lieu ?? ""}`.trim();
-      }
-      
-       else {
+      } else {
         console.log("Aucune donnée trouvée pour ce client.");
       }
     } catch (err) {
