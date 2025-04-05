@@ -1,9 +1,9 @@
-// script.js - version Firebase propre avec séparation admin / public
+// script-client.js - version centralisée multi-clients
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
 
-// 🧩 Nouvelle configuration Firebase
+// ✅ Configuration Firebase centrale
 const firebaseConfig = {
   apiKey: "AIzaSyBRIdIXj0IixLwASOgZsqka550gOAVr7_4",
   authDomain: "avwebcreation-admin.firebaseapp.com",
@@ -16,68 +16,36 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// 🔐 Identifiant utilisateur (UID) - à personnaliser si multi-client
-const uid = "MqxOJD5UmLVAmAymDzLJbp7I3w53"; // remplace par l'UID du client
+// 🔍 Lire le UID depuis une balise <meta name="client-uid" content="UID_Ici">
+const metaUid = document.querySelector('meta[name="client-uid"]');
+if (!metaUid) {
+  console.error("⚠️ Aucun UID trouvé dans la balise <meta name='client-uid'>.");
+} else {
+  const uid = metaUid.content;
 
-// === ZONE ADMIN : Sauvegarde des données ===
-const emailInput = document.getElementById("email");
-const phoneInput = document.getElementById("phone");
-const adresseInput = document.getElementById("adresse");
-const codePostalInput = document.getElementById("codePostal");
-const lieuInput = document.getElementById("lieu");
-const saveBtn = document.getElementById("save");
-const message = document.getElementById("message");
-
-if (saveBtn) {
-  saveBtn.addEventListener("click", async () => {
-    const email = emailInput.value;
-    const phone = phoneInput.value;
-    const adresse = adresseInput.value;
-    const codePostal = codePostalInput.value;
-    const lieu = lieuInput.value;
-
+  // 🔄 Charger les données et les injecter dans la page
+  async function chargerInfosClient() {
     try {
-      await setDoc(doc(db, "infos", uid), {
-        email,
-        phone,
-        adresse,
-        codePostal,
-        lieu
-      });
+      const docRef = doc(db, "infos", uid);
+      const docSnap = await getDoc(docRef);
 
-      message.textContent = "Infos mises à jour ✅";
-      message.style.color = "green";
-      setTimeout(() => (message.textContent = ""), 3000);
-    } catch (error) {
-      console.error("Erreur Firebase :", error);
-      message.textContent = "Erreur lors de la mise à jour";
-      message.style.color = "red";
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        const emailEl = document.getElementById("contact-email");
+        const phoneEl = document.getElementById("contact-phone");
+        const adresseEl = document.getElementById("contact-adresse");
+
+        if (emailEl) emailEl.textContent = data.email ?? "Non défini";
+        if (phoneEl) phoneEl.textContent = data.phone ?? "Non défini";
+        if (adresseEl)
+          adresseEl.textContent = `${data.adresse ?? ""}, ${data.codePostal ?? ""} ${data.lieu ?? ""}`.trim();
+      } else {
+        console.log("Aucune donnée trouvée pour ce client.");
+      }
+    } catch (err) {
+      console.error("Erreur lors du chargement des données client :", err);
     }
-  });
-}
-
-// === ZONE PUBLIQUE : Chargement auto sur page Contact ===
-async function chargerInfosContact() {
-  const emailEl = document.getElementById("contact-email");
-  const phoneEl = document.getElementById("contact-phone");
-  const adresseEl = document.getElementById("contact-adresse");
-
-  // Si aucun élément cible sur la page, on quitte
-  if (!emailEl && !phoneEl && !adresseEl) return;
-
-  try {
-    const docSnap = await getDoc(doc(db, "infos", uid));
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-
-      if (emailEl) emailEl.textContent = data.email ?? "Non défini";
-      if (phoneEl) phoneEl.textContent = data.phone ?? "Non défini";
-      if (adresseEl)
-        adresseEl.textContent = `${data.adresse ?? ""}, ${data.codePostal ?? ""} ${data.lieu ?? ""}`.trim();
-    }
-  } catch (err) {
-    console.error("Erreur de chargement Firebase :", err);
   }
-}
 
-chargerInfosContact();
+  chargerInfosClient();
+}
