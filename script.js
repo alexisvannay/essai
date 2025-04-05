@@ -17,7 +17,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 // 🔐 Identifiant utilisateur (UID) - à personnaliser si multi-client
-const uid = "TON_UID_ICI"; // remplace par l'UID du client
+const uid = "MqxOJD5UmLVAmAymDzLJbp7I3w53"; // remplace par l'UID du client
 
 // === ZONE ADMIN : Sauvegarde des données ===
 const emailInput = document.getElementById("email");
